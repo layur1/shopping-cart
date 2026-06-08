@@ -15,6 +15,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const message = error.response?.data?.message || "";
+    if (
+      error.response?.status === 401 &&
+      /token invalid|expired|no token|not authorised/i.test(message)
+    ) {
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("token");
+    }
+    return Promise.reject(error);
+  }
+);
+
 // ─── Auth ────────────────────────────────────────────────────────────────────
 export const authAPI = {
   register: (name, email, password) =>
