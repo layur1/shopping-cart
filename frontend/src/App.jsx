@@ -363,13 +363,18 @@ export default function App() {
         />
       ) : showAdminLogin ? (
         <AdminLogin
-          onSuccess={(adminData) => {
-            setAdminUser(adminData);
-            setIsAdminLoggedIn(true);
-            setShowAdminLogin(false);
-            localStorage.setItem("adminToken", adminData.token);
-            showToast("success", `Welcome Admin, ${adminData.name.split(" ")[0]}! 👮‍♂️`);
-          }}
+          onSuccess={(data) => {
+  setAdminUser(data.user);
+  setIsAdminLoggedIn(true);
+  setShowAdminLogin(false);
+
+  localStorage.setItem("adminToken", data.token);
+
+  showToast(
+    "success",
+    `Welcome Admin, ${data.user.name.split(" ")[0]}! 👮‍♂️`
+  );
+}}
         />
       ) : (
         <div className="app-shell">

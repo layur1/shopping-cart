@@ -18,7 +18,7 @@ export default function AdminLogin({ onSuccess }) {
       console.log("LOGIN RESPONSE:", res.data);
       localStorage.setItem("adminToken", res.data.token);
       localStorage.setItem("adminUser", JSON.stringify(res.data.user));
-      onSuccess(res.data.user);
+      onSuccess(res.data);
     } catch (err) {
       const message = err.response?.data?.message || "Login failed. Please try again.";
       setError(message);
