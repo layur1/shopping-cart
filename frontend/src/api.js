@@ -2,14 +2,16 @@ import axios from "axios";
 
 // ─── Base client ────────────────────────────────────────────────────────────
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_URL || "http://16.171.17.133:5000/api",
   headers: { "Content-Type": "application/json" },
 });
 
 // Attach JWT token automatically if present in localStorage
 api.interceptors.request.use((config) => {
+  const adminToken = localStorage.getItem("adminToken");
   const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  const authToken = adminToken || token;
+  if (authToken) config.headers.Authorization = `Bearer ${authToken}`;
   return config;
 });
 
@@ -21,6 +23,9 @@ export const authAPI = {
   login: (email, password) =>
     api.post("/auth/login", { email, password }),
 
+  adminLogin: (email, password) =>
+    api.post("/auth/admin/login", { email, password }),
+
   getMe: () =>
     api.get("/auth/me"),
 };
@@ -28,12 +33,39 @@ export const authAPI = {
 // ─── Products ────────────────────────────────────────────────────────────────
 export const productsAPI = {
   getAll: () => api.get("/products"),
+
+  getById: (id) =>
+    api.get(`/products/${id}`),
+
+  create: (productData) =>
+    api.post("/products", productData),
+
+  update: (id, productData) =>
+    api.put(`/products/${id}`, productData),
+
+  delete: (id) =>
+    api.delete(`/products/${id}`),
+
+  updateStock: (id, stock) =>
+    api.put(`/products/${id}/stock`, { stock }),
 };
 
 // ─── Orders ──────────────────────────────────────────────────────────────────
 export const ordersAPI = {
-  create: (items, totalAmount) =>
-    api.post("/orders", { items, totalAmount }),
+  create: (items, totalAmount, customerInfo, deliveryDetails) =>
+    api.post("/orders", { items, totalAmount, customerInfo, deliveryDetails }),
+
+  getAll: () =>
+    api.get("/orders"),
+
+  getById: (id) =>
+    api.get(`/orders/${id}`),
+
+  updateStatus: (id, status) =>
+    api.put(`/orders/${id}/status`, { status }),
+
+  getDashboardStats: () =>
+    api.get("/orders/stats/dashboard"),
 };
 
 // ─── Payments ────────────────────────────────────────────────────────────────

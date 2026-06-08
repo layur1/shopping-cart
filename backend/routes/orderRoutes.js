@@ -1,6 +1,7 @@
 const express   = require("express");
 const router    = express.Router();
-const { createOrder } = require("../controllers/orderController");
+const { createOrder, getAllOrders, getOrderById, updateOrderStatus, getDashboardStats } = require("../controllers/orderController");
+const { protectAdmin } = require("../middleware/authMiddleware");
 
 // Optional auth middleware — attaches req.user if token present, but doesn't block guests
 const optionalAuth = async (req, res, next) => {
@@ -19,6 +20,13 @@ const optionalAuth = async (req, res, next) => {
   next();
 };
 
+// Public route (guests can create orders)
 router.post("/", optionalAuth, createOrder);
+
+// Admin routes
+router.get("/", protectAdmin, getAllOrders);
+router.get("/stats/dashboard", protectAdmin, getDashboardStats);
+router.get("/:id", protectAdmin, getOrderById);
+router.put("/:id/status", protectAdmin, updateOrderStatus);
 
 module.exports = router;

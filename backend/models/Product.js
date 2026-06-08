@@ -16,6 +16,15 @@ const productSchema = new mongoose.Schema({
     required: [true, "Price is required"],
     min: 0,
   },
+  stock: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  outOfStock: {
+    type: Boolean,
+    default: false,
+  },
   image: {
     type: String,
     default: null,
@@ -40,6 +49,10 @@ const productSchema = new mongoose.Schema({
     trim: true,
   },
   createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
     type: Date,
     default: Date.now,
   },

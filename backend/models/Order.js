@@ -21,6 +21,15 @@ const orderItemSchema = new mongoose.Schema({
   },
 });
 
+const deliveryDetailsSchema = new mongoose.Schema({
+  fullName: String,
+  phone: String,
+  address: String,
+  city: String,
+  postalCode: String,
+  notes: String,
+}, { _id: false });
+
 const orderSchema = new mongoose.Schema({
   items: {
     type: [orderItemSchema],
@@ -30,12 +39,36 @@ const orderSchema = new mongoose.Schema({
       message: "Order must include at least one item.",
     },
   },
+  customerInfo: {
+    name: String,
+    email: String,
+  },
+  deliveryDetails: deliveryDetailsSchema,
   totalAmount: {
     type: Number,
     required: true,
     min: 0,
   },
+  status: {
+    type: String,
+    enum: ["Pending", "Processing", "Shipped", "Delivered"],
+    default: "Pending",
+  },
+  paymentStatus: {
+    type: String,
+    enum: ["Unpaid", "Paid"],
+    default: "Paid",
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null,
+  },
   createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
     type: Date,
     default: Date.now,
   },

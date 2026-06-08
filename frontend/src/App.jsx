@@ -3,6 +3,8 @@ import "./AppStyles.css";
 import "./AuthStyles.css";
 import { productsAPI, ordersAPI, paymentAPI, authAPI } from "./api";
 import OrderSummary from "./OrderSummary";
+import AdminLogin from "./AdminLogin";
+import AdminPanel from "./AdminPanel";
 
 // ─── Asset imports ────────────────────────────────────────────────────────────
 import tomatoImg        from "./assets/tomato.jpeg";
@@ -220,6 +222,9 @@ export default function App() {
   const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [showPayModal, setShowPayModal]         = useState(false);
   const [orderData, setOrderData]               = useState(null);
+  const [isAdminLoggedIn, setIsAdminLoggedIn]   = useState(false);
+  const [adminUser, setAdminUser]               = useState(null);
+  const [showAdminLogin, setShowAdminLogin]     = useState(false);
 
   // Fetch products from API; fall back to SAMPLE_PRODUCTS if unavailable
   useEffect(() => {
@@ -235,6 +240,22 @@ export default function App() {
     authAPI.getMe()
       .then((res) => setUser(res.data.user))
       .catch(() => localStorage.removeItem("token"));
+  }, []);
+
+  // Restore admin session from stored adminToken
+  useEffect(() => {
+    const adminToken = localStorage.getItem("adminToken");
+    if (!adminToken) return;
+    authAPI.getMe()
+      .then((res) => {
+        if (res.data.user.role === "admin") {
+          setAdminUser(res.data.user);
+          setIsAdminLoggedIn(true);
+        } else {
+          localStorage.removeItem("adminToken");
+        }
+      })
+      .catch(() => localStorage.removeItem("adminToken"));
   }, []);
 
   // Auto-dismiss toast after 3 s
@@ -292,6 +313,14 @@ export default function App() {
     showToast("success", "Signed out.");
   }
 
+  function handleAdminLogout() {
+    localStorage.removeItem("adminToken");
+    setIsAdminLoggedIn(false);
+    setAdminUser(null);
+    setShowAdminLogin(false);
+    showToast("success", "Admin signed out.");
+  }
+
   function handleCheckout() {
     if (!cart.length) return;
     setCartOpen(false);
@@ -307,12 +336,13 @@ export default function App() {
   async function handlePaymentSuccess(data) {
     setShowPayModal(false);
     setCheckingOut(true);
-    const payload = {
-      items: data.items,
-      totalAmount: data.total,
-    };
     try {
-      await ordersAPI.create(payload.items, payload.totalAmount);
+      await ordersAPI.create(
+        data.items,
+        data.total,
+        data.customerInfo,
+        data.deliveryDetails
+      );
       clearCart();
       setCartOpen(false);
       setOrderData(null);
@@ -325,7 +355,24 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
+    <>
+      {isAdminLoggedIn && adminUser ? (
+        <AdminPanel
+          user={adminUser}
+          onLogout={handleAdminLogout}
+        />
+      ) : showAdminLogin ? (
+        <AdminLogin
+          onSuccess={(adminData) => {
+            setAdminUser(adminData);
+            setIsAdminLoggedIn(true);
+            setShowAdminLogin(false);
+            localStorage.setItem("adminToken", adminData.token);
+            showToast("success", `Welcome Admin, ${adminData.name.split(" ")[0]}! 👮‍♂️`);
+          }}
+        />
+      ) : (
+        <div className="app-shell">
       <nav className="navbar">
         <div className="navbar-brand">
           <span className="navbar-logo">🛍️</span>
@@ -350,6 +397,7 @@ export default function App() {
           ) : (
             <button className="btn btn-ghost btn-sm" onClick={() => setShowAuthModal(true)}>Sign in</button>
           )}
+          <button className="btn btn-ghost btn-sm" onClick={() => setShowAdminLogin(true)}>🔐 Admin</button>
           <button className="cart-toggle" onClick={() => setCartOpen((o) => !o)} aria-label="Toggle cart">
             <span>🛒</span>
             <span className="cart-toggle-label">Cart</span>
@@ -527,6 +575,8 @@ export default function App() {
           <p className="footer-copy">© 2025 ShopEase. All rights reserved.</p>
         </div>
       </footer>
-    </div>
+        </div>
+      )}
+    </>
   );
 }

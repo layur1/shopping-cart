@@ -21,13 +21,13 @@ const register = async (req, res) => {
       return res.status(409).json({ message: "An account with that email already exists." });
     }
 
-    const user  = await User.create({ name, email, password });
+    const user  = await User.create({ name, email, password, role: "user" });
     const token = signToken(user._id);
 
     res.status(201).json({
       message: "Account created successfully.",
       token,
-      user: { id: user._id, name: user.name, email: user.email },
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -53,16 +53,53 @@ const login = async (req, res) => {
     res.json({
       message: "Logged in successfully.",
       token,
-      user: { id: user._id, name: user.name, email: user.email },
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// GET /api/auth/me  (protected)
+// GET /api/auth/me (protected)
 const getMe = async (req, res) => {
-  res.json({ user: { id: req.user._id, name: req.user.name, email: req.user.email } });
+  res.json({ 
+    user: { 
+      id: req.user._id, 
+      name: req.user.name, 
+      email: req.user.email,
+      role: req.user.role 
+    } 
+  });
 };
 
-module.exports = { register, login, getMe };
+// POST /api/auth/admin/login
+const adminLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Please provide email and password." });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
+
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied. Admin account required." });
+    }
+
+    const token = signToken(user._id);
+
+    res.json({
+      message: "Admin login successful.",
+      token,
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { register, login, getMe, adminLogin };

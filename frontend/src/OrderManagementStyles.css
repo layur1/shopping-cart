@@ -1,0 +1,469 @@
+/* ─── Order Management Styles ───────────────────────────────────────────────── */
+
+/* ─── Orders Layout ─────────────────────────────────────────────────────────── */
+.orders-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 24px;
+}
+
+.orders-list-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* ─── Orders Table ──────────────────────────────────────────────────────────── */
+.orders-table-container {
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table thead th {
+  background: var(--surface-alt);
+  padding: 14px;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--border);
+}
+
+.orders-table tbody td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.orders-table tbody tr {
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.orders-table tbody tr:hover {
+  background: var(--surface-alt);
+}
+
+.orders-table tbody tr.selected {
+  background: var(--primary-light);
+  border-left: 4px solid var(--primary);
+}
+
+.order-id {
+  font-weight: 700;
+  color: var(--primary);
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.customer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.customer-col .name {
+  font-weight: 500;
+  color: var(--text-strong);
+  margin: 0;
+}
+
+.customer-col .email {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.items-count {
+  text-align: center;
+  font-weight: 500;
+}
+
+.amount {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: center;
+  min-width: 100px;
+}
+
+.status-badge.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.status-processing {
+  background: #dbeafe;
+  color: #0c4a6e;
+}
+
+.status-badge.status-shipped {
+  background: #ddd6fe;
+  color: #4c1d95;
+}
+
+.status-badge.status-delivered {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* ─── Order Details Panel ───────────────────────────────────────────────────── */
+.order-details-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.details-card {
+  padding: 20px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.details-card.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.details-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin-bottom: 16px;
+}
+
+.details-group {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.details-group:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.group-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 12px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.info-item {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 8px;
+}
+
+.info-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+
+.info-value {
+  font-size: 0.9rem;
+  color: var(--text-strong);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.payment-status {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.delivery-info {
+  background: var(--surface-alt);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.delivery-info p {
+  margin: 0 0 6px 0;
+  color: var(--text);
+}
+
+.delivery-info p:last-child {
+  margin-bottom: 0;
+}
+
+.delivery-info strong {
+  color: var(--text-strong);
+}
+
+.delivery-notes {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+/* ─── Items List ────────────────────────────────────────────────────────────── */
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+}
+
+.item-name {
+  flex: 1;
+}
+
+.item-name .name {
+  font-weight: 600;
+  color: var(--text-strong);
+  margin-bottom: 4px;
+}
+
+.item-name .qty {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.item-price {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.item-price p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.item-price .total {
+  font-weight: 700;
+  color: var(--primary);
+  margin-top: 4px;
+}
+
+/* ─── Pricing Summary ───────────────────────────────────────────────────────── */
+.pricing-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--surface-alt);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.pricing-row span:first-child {
+  color: var(--text-muted);
+}
+
+.pricing-row span:last-child {
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.pricing-row.total-row {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.pricing-row.total-row span:first-child {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+.pricing-row.total-row span:last-child {
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+/* ─── Status Update ─────────────────────────────────────────────────────────── */
+.status-update {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-update .form-input {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.updating-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ─── Toast Notification ────────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  animation: toastSlideIn 0.3s ease-out;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-icon {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.toast--success {
+  border-left: 4px solid #16a34a;
+  color: #166534;
+}
+
+.toast--success .toast-icon {
+  color: #16a34a;
+}
+
+.toast--error {
+  border-left: 4px solid #dc2626;
+  color: #991b1b;
+}
+
+.toast--error .toast-icon {
+  color: #dc2626;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .orders-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .order-details-section {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .orders-table {
+    font-size: 0.8rem;
+  }
+
+  .orders-table thead th,
+  .orders-table tbody td {
+    padding: 10px 8px;
+  }
+
+  .customer-col .email {
+    font-size: 0.7rem;
+  }
+
+  .details-card {
+    padding: 16px;
+    max-height: none;
+  }
+
+  .info-item {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .toast {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .orders-table {
+    font-size: 0.7rem;
+  }
+
+  .orders-table thead th,
+  .orders-table tbody td {
+    padding: 8px 6px;
+  }
+
+  .orders-table thead th:nth-child(n + 4),
+  .orders-table tbody td:nth-child(n + 4) {
+    display: none;
+  }
+
+  .info-item {
+    grid-template-columns: 1fr;
+  }
+
+  .info-label {
+    font-size: 0.75rem;
+  }
+
+  .item-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .item-price {
+    text-align: left;
+  }
+}
