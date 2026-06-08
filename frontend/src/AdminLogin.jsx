@@ -15,6 +15,7 @@ export default function AdminLogin({ onSuccess }) {
 
     try {
       const res = await authAPI.adminLogin(email, password);
+      console.log("LOGIN RESPONSE:", res.data);
       localStorage.setItem("adminToken", res.data.token);
       localStorage.setItem("adminUser", JSON.stringify(res.data.user));
       onSuccess(res.data.user);
