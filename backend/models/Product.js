@@ -3,20 +3,26 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  image: {
-    type: String, // URL (for remote images / fallback)
-  },
-  imageKey: {
-    type: String, // key that maps to a local import in the frontend (e.g. "laptop", "mouse")
+    required: [true, "Product name is required"],
+    trim: true,
   },
   category: {
     type: String,
+    required: [true, "Category is required"],
+    trim: true,
+  },
+  price: {
+    type: Number,
+    required: [true, "Price is required"],
+    min: 0,
+  },
+  image: {
+    type: String,
+    default: null,
+  },
+  imageKey: {
+    type: String,
+    default: null,
   },
   rating: {
     type: Number,
@@ -25,7 +31,17 @@ const productSchema = new mongoose.Schema({
     default: 0,
   },
   icon: {
-    type: String, // emoji, e.g. "💻"
+    type: String,
+    default: "📦",
+  },
+  description: {
+    type: String,
+    default: "",
+    trim: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 

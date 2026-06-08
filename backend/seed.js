@@ -1,132 +1,96 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-
 const Product = require("./models/Product");
 
 const products = [
+  // ── Vegetables ──
   {
-    name:     "Classic Leather Bag",
-    category: "Accessories",
-    price:    2499,
-    image:    "https://picsum.photos/seed/bag/600/400",
-    imageKey: null,
-    rating:   4.5,
-    icon:     "👜",
+    name: "Roma Tomatoes", category: "Vegetables", price: 120,
+    image: null, imageKey: "tomato", rating: 4.5, icon: "🍅",
+    description: "Firm, flavourful Roma tomatoes. Perfect for curries, salads and sauces.",
   },
   {
-    name:     "Running Sneakers",
-    category: "Footwear",
-    price:    3499,
-    image:    "https://picsum.photos/seed/shoes/600/400",
-    imageKey: null,
-    rating:   4.2,
-    icon:     "👟",
+    name: "Fresh Spinach", category: "Vegetables", price: 85,
+    image: null, imageKey: "spinach", rating: 4.3, icon: "🥬",
+    description: "Tender baby spinach leaves, washed and ready to use.",
   },
   {
-    name:     "Wireless Headphones",
-    category: "Electronics",
-    price:    4999,
-    image:    "https://picsum.photos/seed/headphones/600/400",
-    imageKey: null,
-    rating:   4.7,
-    icon:     "🎧",
+    name: "Red Onions", category: "Vegetables", price: 65,
+    image: null, imageKey: "onion", rating: 4.1, icon: "🧅",
+    description: "Mild, slightly sweet red onions. Great raw or caramelised.",
   },
   {
-    name:     "Ceramic Mug Set",
-    category: "Home",
-    price:    799,
-    image:    "https://picsum.photos/seed/mug/600/400",
-    imageKey: null,
-    rating:   4.1,
-    icon:     "☕",
+    name: "Carrots", category: "Vegetables", price: 95,
+    image: null, imageKey: "carrot", rating: 4.4, icon: "🥕",
+    description: "Crunchy, naturally sweet carrots. Ideal for stews and snacking.",
+  },
+
+  // ── Fruits ──
+  {
+    name: "Alphonso Mangoes", category: "Fruits", price: 450,
+    image: null, imageKey: "mango", rating: 4.9, icon: "🥭",
+    description: "The king of mangoes — rich, creamy and intensely fragrant.",
   },
   {
-    name:     "Minimalist Watch",
-    category: "Accessories",
-    price:    5599,
-    image:    "https://picsum.photos/seed/watch/600/400",
-    imageKey: null,
-    rating:   4.6,
-    icon:     "🕒",
+    name: "Strawberries", category: "Fruits", price: 320,
+    image: null, imageKey: "strawberry", rating: 4.7, icon: "🍓",
+    description: "Plump, sun-ripened strawberries. Sweet with a hint of tartness.",
   },
   {
-    name:     "Organic Cotton Tee",
-    category: "Clothing",
-    price:    699,
-    image:    "https://picsum.photos/seed/tshirt/600/400",
-    imageKey: null,
-    rating:   4.0,
-    icon:     "👕",
+    name: "Bananas", category: "Fruits", price: 80,
+    image: null, imageKey: "banana", rating: 4.2, icon: "🍌",
+    description: "Perfectly ripe yellow bananas, great for eating or baking.",
   },
   {
-    name:     "Desk Lamp",
-    category: "Home",
-    price:    1299,
-    image:    "https://picsum.photos/seed/lamp/600/400",
-    imageKey: null,
-    rating:   4.3,
-    icon:     "💡",
+    name: "Green Apples", category: "Fruits", price: 210,
+    image: null, imageKey: "apple", rating: 4.5, icon: "🍏",
+    description: "Crisp Granny Smith apples — tangy, refreshing and great for juicing.",
+  },
+
+  // ── Cakes ──
+  {
+    name: "Chocolate Fudge Cake", category: "Cakes", price: 1800,
+    image: null, imageKey: "chocolate_cake", rating: 4.9, icon: "🎂",
+    description: "Dense, moist chocolate cake smothered in rich fudge ganache.",
   },
   {
-    name:     "Travel Backpack",
-    category: "Accessories",
-    price:    3799,
-    image:    "https://picsum.photos/seed/backpack/600/400",
-    imageKey: null,
-    rating:   4.4,
-    icon:     "🎒",
+    name: "Vanilla Sponge Cake", category: "Cakes", price: 1400,
+    image: null, imageKey: "vanilla_cake", rating: 4.6, icon: "🍰",
+    description: "Light, airy vanilla sponge layered with fresh cream and jam.",
   },
   {
-    name:     "Bluetooth Speaker",
-    category: "Electronics",
-    price:    2999,
-    image:    "https://picsum.photos/seed/speaker/600/400",
-    imageKey: null,
-    rating:   4.3,
-    icon:     "🔊",
+    name: "Red Velvet Cake", category: "Cakes", price: 1950,
+    image: null, imageKey: "red_velvet", rating: 4.8, icon: "🎂",
+    description: "Classic red velvet with velvety crumb and tangy cream cheese frosting.",
+  },
+
+  // ── Biscuits ──
+  {
+    name: "Butter Shortbread", category: "Biscuits", price: 350,
+    image: null, imageKey: "shortbread", rating: 4.6, icon: "🍪",
+    description: "Melt-in-your-mouth Scottish-style shortbread made with pure butter.",
   },
   {
-    name:     "Yoga Mat",
-    category: "Clothing",
-    price:    1199,
-    image:    "https://picsum.photos/seed/yoga/600/400",
-    imageKey: null,
-    rating:   4.5,
-    icon:     "🧘",
+    name: "Chocolate Chip Cookies", category: "Biscuits", price: 299,
+    image: null, imageKey: "choc_chip", rating: 4.7, icon: "🍪",
+    description: "Chewy, golden cookies loaded with dark chocolate chips.",
   },
   {
-    name:     "Laptop",
-    category: "Electronics",
-    price:    89999,
-    image:    null,
-    imageKey: "laptop",   // maps to laptopImg import in frontend
-    rating:   4.8,
-    icon:     "💻",
-  },
-  {
-    name:     "Wireless Mouse",
-    category: "Electronics",
-    price:    2499,
-    image:    null,
-    imageKey: "mouse",    // maps to mouseImg import in frontend
-    rating:   4.4,
-    icon:     "🖱️",
+    name: "Oat & Raisin Biscuits", category: "Biscuits", price: 249,
+    image: null, imageKey: "oat_raisin", rating: 4.3, icon: "🍪",
+    description: "Hearty oat biscuits with plump raisins. A wholesome treat.",
   },
 ];
 
 async function seed() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("✅ Connected to MongoDB:", mongoose.connection.name);
-
-    // Wipe existing products so re-running doesn't duplicate
+    console.log("✅ Connected:", mongoose.connection.name);
     await Product.deleteMany({});
     console.log("🗑️  Cleared existing products");
-
     const inserted = await Product.insertMany(products);
     console.log(`🌱 Seeded ${inserted.length} products:`);
-    inserted.forEach((p) => console.log(`   • ${p.icon}  ${p.name}  (Rs. ${p.price})`));
-
+    inserted.forEach((p) => console.log(`   ${p.icon}  ${p.name}  (Rs. ${p.price})`));
   } catch (err) {
     console.error("❌ Seed failed:", err.message);
     process.exit(1);

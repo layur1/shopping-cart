@@ -372,6 +372,17 @@ body {
   color: var(--text-strong);
 }
 
+.product-description {
+  font-size: 0.78rem;
+  color: #777;
+  line-height: 1.45;
+  margin: 0.35rem 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* ── Buttons ── */
 .btn {
   display: inline-flex;

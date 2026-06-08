@@ -1,18 +1,43 @@
 ﻿import { useEffect, useMemo, useState, useCallback } from "react";
 import "./AppStyles.css";
 import "./AuthStyles.css";
-import laptopImg from "./assets/laptop.jpg";
-import mouseImg  from "./assets/mouse.jpg";
 import { productsAPI, ordersAPI, paymentAPI, authAPI } from "./api";
 
+// ─── Asset imports ────────────────────────────────────────────────────────────
+import tomatoImg        from "./assets/tomato.jpeg";
+import spinachImg       from "./assets/spinach.jpeg";
+import onionImg         from "./assets/onion.jpeg";
+import carrotImg        from "./assets/carrot.jpeg";
+import mangoImg         from "./assets/mango.jpeg";
+import strawberryImg    from "./assets/strawberry.jpeg";
+import bananaImg        from "./assets/banana.jpeg";
+import appleImg         from "./assets/apple.jpeg";
+import chocolateCakeImg from "./assets/chocolate_cake.jpeg";
+import vanillaCakeImg   from "./assets/vanilla_cake.jpeg";
+import redVelvetImg     from "./assets/red_velvet.jpeg";
+import shortbreadImg    from "./assets/shortbread.jpeg";
+import chocChipImg      from "./assets/choc_chip.jpeg";
+import oatRaisinImg     from "./assets/oat_raisin.jpeg";
+
 // ─── Local image map ──────────────────────────────────────────────────────────
-// Add a new entry here whenever you add a local asset to src/assets/
 const LOCAL_IMAGES = {
-  laptop: laptopImg,
-  mouse:  mouseImg,
+  tomato:         tomatoImg,
+  spinach:        spinachImg,
+  onion:          onionImg,
+  carrot:         carrotImg,
+  mango:          mangoImg,
+  strawberry:     strawberryImg,
+  banana:         bananaImg,
+  apple:          appleImg,
+  chocolate_cake: chocolateCakeImg,
+  vanilla_cake:   vanillaCakeImg,
+  red_velvet:     redVelvetImg,
+  shortbread:     shortbreadImg,
+  choc_chip:      chocChipImg,
+  oat_raisin:     oatRaisinImg,
 };
 
-// Resolve a product's image: prefer local asset via imageKey, then remote URL, then picsum fallback
+// Resolve a product's image: prefer local asset, then remote URL, then picsum fallback
 function resolveImage(product) {
   if (product.imageKey && LOCAL_IMAGES[product.imageKey]) return LOCAL_IMAGES[product.imageKey];
   if (product.image) return product.image;
@@ -20,23 +45,26 @@ function resolveImage(product) {
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const CATEGORIES = ["All", "Accessories", "Footwear", "Electronics", "Home", "Clothing"];
+const CATEGORIES = ["All", "Vegetables", "Fruits", "Cakes", "Biscuits"];
 
 const SAMPLE_PRODUCTS = [
-  { _id: "s1",  name: "Classic Leather Bag",  category: "Accessories", price: 2499,  image: "https://picsum.photos/seed/bag/600/400",        rating: 4.5, icon: "👜" },
-  { _id: "s2",  name: "Running Sneakers",      category: "Footwear",    price: 3499,  image: "https://picsum.photos/seed/shoes/600/400",      rating: 4.2, icon: "👟" },
-  { _id: "s3",  name: "Wireless Headphones",   category: "Electronics", price: 4999,  image: "https://picsum.photos/seed/headphones/600/400", rating: 4.7, icon: "🎧" },
-  { _id: "s4",  name: "Ceramic Mug Set",       category: "Home",        price: 799,   image: "https://picsum.photos/seed/mug/600/400",        rating: 4.1, icon: "☕" },
-  { _id: "s5",  name: "Minimalist Watch",      category: "Accessories", price: 5599,  image: "https://picsum.photos/seed/watch/600/400",      rating: 4.6, icon: "🕒" },
-  { _id: "s6",  name: "Organic Cotton Tee",    category: "Clothing",    price: 699,   image: "https://picsum.photos/seed/tshirt/600/400",     rating: 4.0, icon: "👕" },
-  { _id: "s7",  name: "Desk Lamp",             category: "Home",        price: 1299,  image: "https://picsum.photos/seed/lamp/600/400",       rating: 4.3, icon: "💡" },
-  { _id: "s8",  name: "Travel Backpack",       category: "Accessories", price: 3799,  image: "https://picsum.photos/seed/backpack/600/400",   rating: 4.4, icon: "🎒" },
-  { _id: "s9",  name: "Bluetooth Speaker",     category: "Electronics", price: 2999,  image: "https://picsum.photos/seed/speaker/600/400",   rating: 4.3, icon: "🔊" },
-  { _id: "s10", name: "Yoga Mat",              category: "Clothing",    price: 1199,  image: "https://picsum.photos/seed/yoga/600/400",       rating: 4.5, icon: "🧘" },
-  { _id: "s11", name: "Laptop",                category: "Electronics", price: 89999, imageKey: "laptop",                                     rating: 4.8, icon: "💻" },
-  { _id: "s12", name: "Wireless Mouse",        category: "Electronics", price: 2499,  imageKey: "mouse",                                      rating: 4.4, icon: "🖱️" },
+  { _id:"s1",  name:"Roma Tomatoes",         category:"Vegetables", price:120,  imageKey:"tomato",         rating:4.5, icon:"🍅", description:"Firm, flavourful Roma tomatoes. Perfect for curries, salads and sauces." },
+  { _id:"s2",  name:"Fresh Spinach",          category:"Vegetables", price:85,   imageKey:"spinach",        rating:4.3, icon:"🥬", description:"Tender baby spinach leaves, washed and ready to use." },
+  { _id:"s3",  name:"Red Onions",             category:"Vegetables", price:65,   imageKey:"onion",          rating:4.1, icon:"🧅", description:"Mild, slightly sweet red onions. Great raw or caramelised." },
+  { _id:"s4",  name:"Carrots",                category:"Vegetables", price:95,   imageKey:"carrot",         rating:4.4, icon:"🥕", description:"Crunchy, naturally sweet carrots. Ideal for stews and snacking." },
+  { _id:"s5",  name:"Alphonso Mangoes",       category:"Fruits",     price:450,  imageKey:"mango",          rating:4.9, icon:"🥭", description:"The king of mangoes — rich, creamy and intensely fragrant." },
+  { _id:"s6",  name:"Strawberries",           category:"Fruits",     price:320,  imageKey:"strawberry",     rating:4.7, icon:"🍓", description:"Plump, sun-ripened strawberries. Sweet with a hint of tartness." },
+  { _id:"s7",  name:"Bananas",                category:"Fruits",     price:80,   imageKey:"banana",         rating:4.2, icon:"🍌", description:"Perfectly ripe yellow bananas, great for eating or baking." },
+  { _id:"s8",  name:"Green Apples",           category:"Fruits",     price:210,  imageKey:"apple",          rating:4.5, icon:"🍏", description:"Crisp Granny Smith apples — tangy, refreshing and great for juicing." },
+  { _id:"s9",  name:"Chocolate Fudge Cake",   category:"Cakes",      price:1800, imageKey:"chocolate_cake", rating:4.9, icon:"🎂", description:"Dense, moist chocolate cake smothered in rich fudge ganache." },
+  { _id:"s10", name:"Vanilla Sponge Cake",    category:"Cakes",      price:1400, imageKey:"vanilla_cake",   rating:4.6, icon:"🍰", description:"Light, airy vanilla sponge layered with fresh cream and jam." },
+  { _id:"s11", name:"Red Velvet Cake",        category:"Cakes",      price:1950, imageKey:"red_velvet",     rating:4.8, icon:"🎂", description:"Classic red velvet with velvety crumb and tangy cream cheese frosting." },
+  { _id:"s12", name:"Butter Shortbread",      category:"Biscuits",   price:350,  imageKey:"shortbread",     rating:4.6, icon:"🍪", description:"Melt-in-your-mouth Scottish-style shortbread made with pure butter." },
+  { _id:"s13", name:"Chocolate Chip Cookies", category:"Biscuits",   price:299,  imageKey:"choc_chip",      rating:4.7, icon:"🍪", description:"Chewy, golden cookies loaded with dark chocolate chips." },
+  { _id:"s14", name:"Oat & Raisin Biscuits",  category:"Biscuits",   price:249,  imageKey:"oat_raisin",     rating:4.3, icon:"🍪", description:"Hearty oat biscuits with plump raisins. A wholesome treat." },
 ];
 
+// ─── Sub-components ───────────────────────────────────────────────────────────
 function StarRating({ rating }) {
   return (
     <div className="star-rating" aria-label={`${rating} out of 5`}>
@@ -175,6 +203,7 @@ function PaymentModal({ total, onSuccess, onClose }) {
   );
 }
 
+// ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [products, setProducts]                 = useState([]);
   const [cart, setCart]                         = useState([]);
@@ -187,12 +216,14 @@ export default function App() {
   const [showAuthModal, setShowAuthModal]       = useState(false);
   const [showPayModal, setShowPayModal]         = useState(false);
 
+  // Fetch products from API; fall back to SAMPLE_PRODUCTS if unavailable
   useEffect(() => {
     productsAPI.getAll()
       .then((res) => { if (res.data?.length) setProducts(res.data); })
       .catch(() => {});
   }, []);
 
+  // Restore session from stored token
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -201,6 +232,7 @@ export default function App() {
       .catch(() => localStorage.removeItem("token"));
   }, []);
 
+  // Auto-dismiss toast after 3 s
   useEffect(() => {
     if (!toast) return;
     const id = setTimeout(() => setToast(null), 3000);
@@ -316,11 +348,11 @@ export default function App() {
       <header className="hero-banner">
         <div className="hero-content">
           <span className="hero-eyebrow">✨ Free delivery on orders over Rs. 5,000</span>
-          <h1 className="hero-title">Shop everything<br />you love.</h1>
-          <p className="hero-subtitle">Curated products, great prices, hassle-free checkout.</p>
+          <h1 className="hero-title">Fresh groceries &amp;<br />handmade treats.</h1>
+          <p className="hero-subtitle">Vegetables, fruits, cakes and biscuits — delivered to your door.</p>
         </div>
         <div className="hero-decoration" aria-hidden>
-          <span>🛍️</span><span>👟</span><span>🎧</span><span>⌚</span>
+          <span>🥦</span><span>🍓</span><span>🎂</span><span>🍪</span>
         </div>
       </header>
 
@@ -371,6 +403,9 @@ export default function App() {
                       <h3 className="product-name">{product.name}</h3>
                     </div>
                     <StarRating rating={product.rating || 0} />
+                    {product.description && (
+                      <p className="product-description">{product.description}</p>
+                    )}
                     <div className="product-footer">
                       <span className="product-price">
                         Rs. {Number(product.price).toLocaleString("en-IN")}
