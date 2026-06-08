@@ -364,17 +364,15 @@ export default function App() {
       ) : showAdminLogin ? (
         <AdminLogin
           onSuccess={(data) => {
-  setAdminUser(data.user);
-  setIsAdminLoggedIn(true);
-  setShowAdminLogin(false);
-
-  localStorage.setItem("adminToken", data.token);
-
-  showToast(
-    "success",
-    `Welcome Admin, ${data.user.name.split(" ")[0]}! 👮‍♂️`
-  );
-}}
+            setAdminUser(data.user);
+            setIsAdminLoggedIn(true);
+            setShowAdminLogin(false);
+            localStorage.setItem("adminToken", data.token);
+            showToast(
+              "success",
+              `Welcome Admin, ${data.user.name.split(" ")[0]}! 👮‍♂️`
+            );
+          }}
         />
       ) : (
         <div className="app-shell">

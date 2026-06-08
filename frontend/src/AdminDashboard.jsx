@@ -27,6 +27,11 @@ export default function AdminDashboard({
       setStats(res.data);
       setError("");
     } catch (err) {
+      if (err.response?.status === 401) {
+        setError("Session expired. Please sign in again.");
+        onLogout();
+        return;
+      }
       setError("Failed to load dashboard stats");
     } finally {
       setLoading(false);

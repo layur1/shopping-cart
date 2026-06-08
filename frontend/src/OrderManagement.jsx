@@ -28,6 +28,11 @@ export default function OrderManagement({ user, onLogout, onNavigate }) {
       setOrders(res.data);
       setError("");
     } catch (err) {
+      if (err.response?.status === 401) {
+        setError("Session expired. Please sign in again.");
+        onLogout();
+        return;
+      }
       setError("Failed to load orders");
     } finally {
       setLoading(false);
@@ -46,6 +51,10 @@ export default function OrderManagement({ user, onLogout, onNavigate }) {
       }
       showToast("success", "Order status updated!");
     } catch (err) {
+      if (err.response?.status === 401) {
+        onLogout();
+        return;
+      }
       showToast("error", err.response?.data?.message || "Failed to update");
     } finally {
       setUpdatingStatus(false);
