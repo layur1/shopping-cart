@@ -2,6 +2,7 @@
 import "./AppStyles.css";
 import "./AuthStyles.css";
 import { productsAPI, ordersAPI, paymentAPI, authAPI } from "./api";
+import OrderSummary from "./OrderSummary";
 
 // ─── Asset imports ────────────────────────────────────────────────────────────
 import tomatoImg        from "./assets/tomato.jpeg";
@@ -148,12 +149,14 @@ function AuthModal({ onClose, onSuccess }) {
   );
 }
 
-function PaymentModal({ total, onSuccess, onClose }) {
+function PaymentModal({ orderData, onSuccess, onClose }) {
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry]         = useState("");
   const [cvc, setCvc]               = useState("");
   const [loading, setLoading]       = useState(false);
   const [error, setError]           = useState("");
+
+  const total = orderData?.total || 0;
 
   async function handlePay(e) {
     e.preventDefault();
@@ -162,7 +165,7 @@ function PaymentModal({ total, onSuccess, onClose }) {
     try {
       await paymentAPI.createIntent(total);
       await new Promise((r) => setTimeout(r, 1000));
-      onSuccess();
+      onSuccess(orderData);
     } catch (err) {
       setError(err.response?.data?.message || "Payment failed. Please try again.");
     } finally {
@@ -214,7 +217,9 @@ export default function App() {
   const [cartOpen, setCartOpen]                 = useState(false);
   const [user, setUser]                         = useState(null);
   const [showAuthModal, setShowAuthModal]       = useState(false);
+  const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [showPayModal, setShowPayModal]         = useState(false);
+  const [orderData, setOrderData]               = useState(null);
 
   // Fetch products from API; fall back to SAMPLE_PRODUCTS if unavailable
   useEffect(() => {
@@ -289,20 +294,28 @@ export default function App() {
 
   function handleCheckout() {
     if (!cart.length) return;
+    setCartOpen(false);
+    setShowOrderSummary(true);
+  }
+
+  function handleProceedToPayment(data) {
+    setOrderData(data);
+    setShowOrderSummary(false);
     setShowPayModal(true);
   }
 
-  async function handlePaymentSuccess() {
+  async function handlePaymentSuccess(data) {
     setShowPayModal(false);
     setCheckingOut(true);
     const payload = {
-      items: cart.map(({ _id, name, price, quantity }) => ({ productId: _id, name, price, quantity })),
-      totalAmount: cartTotal,
+      items: data.items,
+      totalAmount: data.total,
     };
     try {
       await ordersAPI.create(payload.items, payload.totalAmount);
       clearCart();
       setCartOpen(false);
+      setOrderData(null);
       showToast("success", "Order placed! Thank you for your purchase 🎉");
     } catch (err) {
       showToast("error", err.response?.data?.message || "Could not save order. Please contact support.");
@@ -476,6 +489,16 @@ export default function App() {
 
       {cartOpen && <div className="cart-overlay" onClick={() => setCartOpen(false)} aria-hidden />}
 
+      {showOrderSummary && cart.length > 0 && (
+        <OrderSummary
+          cart={cart}
+          user={user}
+          onClose={() => setShowOrderSummary(false)}
+          onProceedToPayment={handleProceedToPayment}
+          LOCAL_IMAGES={LOCAL_IMAGES}
+        />
+      )}
+
       {showAuthModal && (
         <AuthModal
           onClose={() => setShowAuthModal(false)}
@@ -483,9 +506,9 @@ export default function App() {
         />
       )}
 
-      {showPayModal && (
+      {showPayModal && orderData && (
         <PaymentModal
-          total={cartTotal}
+          orderData={orderData}
           onSuccess={handlePaymentSuccess}
           onClose={() => setShowPayModal(false)}
         />
